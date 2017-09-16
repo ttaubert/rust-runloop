@@ -104,13 +104,14 @@ impl RunLoop {
 #[cfg(test)]
 mod tests {
     use std::sync::{Arc, Barrier};
+    use std::sync::mpsc::channel;
 
     use super::RunLoop;
 
     #[test]
     fn test_empty() {
         // Create a runloop that exits right away.
-        let rloop = RunLoop::new(move |_| {}).unwrap();
+        let rloop = RunLoop::new(|_| {}).unwrap();
         while rloop.alive() { /* wait */ }
         rloop.cancel(); // noop
     }
@@ -146,5 +147,24 @@ mod tests {
         while rloop.alive() { /* wait */ }
         assert!(!rloop.alive());
         rloop.cancel(); // noop
+    }
+
+    #[test]
+    fn test_channel() {
+        let (tx, rx) = channel();
+
+        // A runloop that sends data via a channel.
+        let rloop = RunLoop::new(move |alive| {
+            while alive() {
+                tx.send(0u8).unwrap();
+            }
+        }).unwrap();
+
+        // Wait until the data arrives.
+        assert_eq!(rx.recv().unwrap(), 0u8);
+
+        assert!(rloop.alive());
+        rloop.cancel();
+        assert!(!rloop.alive());
     }
 }
