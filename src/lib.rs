@@ -154,10 +154,8 @@ mod tests {
         let (tx, rx) = channel();
 
         // A runloop that sends data via a channel.
-        let rloop = RunLoop::new(move |alive| {
-            while alive() {
-                tx.send(0u8).unwrap();
-            }
+        let rloop = RunLoop::new(move |alive| while alive() {
+            tx.send(0u8).unwrap();
         }).unwrap();
 
         // Wait until the data arrives.
