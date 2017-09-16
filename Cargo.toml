@@ -7,4 +7,4 @@ readme = "README.md"
 keywords = ["runloop", "threads"]
 repository = "https://github.com/ttaubert/rust-runloop/"
 homepage = "https://github.com/ttaubert/rust-runloop/"
-description = "Simple cancelable polling threads (with optional timeouts)."
+description = "Cancelable non-blocking polling threads (with optional timeouts)."
